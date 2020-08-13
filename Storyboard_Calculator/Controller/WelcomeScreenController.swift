@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import MaterialComponents.MaterialSnackbar
+import AudioToolbox
 
 class WelcomeScreenController: UIViewController {
     
@@ -21,6 +22,11 @@ class WelcomeScreenController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            if let textField = self.username.text, textField.isEmpty {
+                self.vibrate()
+            }
+        }
     }
     
     @IBAction func continueButtonPressed(_ sender: UIButton) {
@@ -40,5 +46,19 @@ class WelcomeScreenController: UIViewController {
             calcVC.username = currentUser
             calcVC.language = currentLanguage
         }
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        if motion == .motionShake {
+            username.text = ""
+        }
+    }
+    
+    func vibrate() {
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
     }
 }

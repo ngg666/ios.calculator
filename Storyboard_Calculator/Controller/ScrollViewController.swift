@@ -34,6 +34,13 @@ class ScrollViewController: UIViewController {
              performSegue(withIdentifier: "toHistory", sender: self)
          }
      }
+    
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        if motion == .motionShake {
+            slides[pageControl.currentPage].calculatorModel.clearValues()
+            slides[pageControl.currentPage].updateView()
+        }
+    }
 }
 
 
@@ -96,6 +103,13 @@ extension ScrollViewController: UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         slides[pageControl.currentPage].calculatorModel.displayedValue = self.currentDisplayedValue
+        
+        if currentDisplayedValue == K.Values.zeroString {
+            slides[pageControl.currentPage].calculatorModel.isTyping = false
+        } else {
+            slides[pageControl.currentPage].calculatorModel.isTyping = true
+        }
+        
         slides[pageControl.currentPage].updateView()
     }
     
